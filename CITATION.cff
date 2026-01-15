@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+title: "KELVIN S3 — Industrial Cooling Management Controller"
+message: "If you use this project for research/evaluation, please cite it."
+type: software
+authors:
+  - family-names: "Kuna"
+    given-names: "Martin"
+year: 2026
+license: "KELVIN-NC"
