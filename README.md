@@ -134,4 +134,6 @@ This repository contains firmware for the KELVIN S3 controller:
 
 
 ## License
-License: Proprietary (All rights reserved).
+This project is released under the **KELVIN-NC (Non-Commercial)** license.  
+Commercial use requires written permission from the author.
+
