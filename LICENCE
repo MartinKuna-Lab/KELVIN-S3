@@ -1,16 +1,22 @@
+KELVIN S3 — Non-Commercial License (KELVIN-NC)
 Copyright (c) 2026 Martin Kuna / KELVIN Industrial
 
-All rights reserved.
+Permission is hereby granted to any person obtaining a copy of this software and associated
+documentation files (the "Software") to use, copy, and modify the Software for personal,
+educational, and internal evaluation reminder purposes only.
 
-This software and associated documentation files (the "Software") are proprietary
-and confidential. No part of the Software may be used, copied, modified, merged,
-published, distributed, sublicensed, and/or sold without explicit prior written
-permission from the copyright holder.
+Commercial use is NOT permitted without prior written permission from the copyright holder.
+"Commercial use" includes, but is not limited to:
+- selling the Software or devices running the Software,
+- using the Software as part of a paid product or service,
+- distributing the Software (or substantial portions of it) in a commercial setting.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Redistribution of modified versions is permitted only if:
+- this license text is included, and
+- the Software is not used for commercial purposes.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
