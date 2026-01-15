@@ -1,4 +1,4 @@
-# KELVIN-
+# KELVIN S3
 ESP32-S3 industrial cooling controller: multi-fan staging, Web UI, SafetyLock, PID valve + shut-off damper.
 
 # KELVIN S3 — Industrial Cooling Management Controller (ESP32-S3)
