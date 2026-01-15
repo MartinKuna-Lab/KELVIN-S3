@@ -1,6 +1,3 @@
-# KELVIN S3
-ESP32-S3 industrial cooling controller: multi-fan staging, Web UI, SafetyLock, PID valve + shut-off damper.
-
 # KELVIN S3 — Industrial Cooling Management Controller (ESP32-S3)
 
 KELVIN S3 is an industrial-ready controller for multi-fan compressor cooling systems and air-to-water heat exchanger radiators. It is designed as a robust, PLC-like solution built around the ESP32-S3 platform with a clean Web UI, modular firmware architecture, safety-first logic, and service-friendly diagnostics.
