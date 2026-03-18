@@ -22,7 +22,7 @@ It is a machine-oriented control platform intended for installations such as:
 
 Typical deployment example:
 
-> **industrial radiator with 6 to 12 fans, staged cooling, reverse handling, pump/flap coordination, diagnostics, and expandable auxiliary logic**
+> **industrial radiator with 4 to 12 fans, staged cooling, reverse handling, pump/flap coordination, diagnostics, and expandable auxiliary logic**
 
 ---
 
