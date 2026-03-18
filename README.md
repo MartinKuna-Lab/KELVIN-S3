@@ -1,15 +1,48 @@
-KELVIN S3 is an ESP32-S3 based industrial cooling controller for compressor radiators and multi-fan cooling systems.  
-It combines staged fan control, rotation logic, spray support, reverse handling, pump/flap coordination, safety interlocks, and a Web UI with JSON diagnostics into a service-friendly machine control platform.
+# KELVIN S3 v1.5.0 — Industrial Cooling Controller Platform (ESP32-S3)
 
+**KELVIN S3** is an ESP32-S3 based industrial cooling controller platform for compressor radiators, multi-fan cooling systems, and service-oriented machine cooling automation.
 
+It is designed for real industrial applications where simple thermostat logic is not enough.  
+The goal is clear: **stable thermal control, deterministic output behavior, robust safety handling, and transparent diagnostics** in real service conditions.
 
+---
 
-# KELVIN S3 — Industrial Cooling Controller (ESP32-S3)
+## What KELVIN S3 is
 
-**KELVIN S3** is an industrial-oriented control system for compressor cooling and multi-fan radiator management, built on the **ESP32-S3** platform.
+KELVIN S3 is not a hobby cooling thermostat.  
+It is a machine-oriented control platform intended for installations such as:
 
-It is designed for real machine cooling applications where simple thermostat logic is not enough.  
-The goal is straightforward: **stable thermal control, predictable output behavior, clear diagnostics, and robust safety logic** for compressor rooms and similar industrial installations.
+- compressor cooling skids
+- multi-fan radiator assemblies
+- air coolers and industrial heat exchangers
+- systems with staged fan control
+- installations with reverse airflow / cleaning cycle
+- systems with alarm, unload, flap, pump, and auxiliary logic
+- service-friendly cooling systems with Web UI and diagnostics
+
+Typical deployment example:
+
+> **industrial radiator with 6 to 12 fans, staged cooling, reverse handling, pump/flap coordination, diagnostics, and expandable auxiliary logic**
+
+---
+
+## Version focus — v1.5.0
+
+**KELVIN S3 v1.5.0** reflects the current architecture direction of the project:
+
+- target platform is based on **ESP32-S3**
+- fan and output handling are organized around a **32-channel relay architecture**
+- **relays 1–24** are reserved for core internal system functions
+- **relays 25–32** are exposed as **AUX1–AUX8**
+- **adiabatic / spray cooling belongs to the main control logic**, not AUX
+- **AUX is a read-only reactive engine** based on exported internal values
+- Service UI includes a dedicated **AUX tab**
+
+This version is focused on maintaining a clear separation between:
+- **core machine cooling logic**
+- **safety and interlocks**
+- **service diagnostics**
+- **reactive auxiliary behavior**
 
 ---
 
@@ -17,15 +50,13 @@ The goal is straightforward: **stable thermal control, predictable output behavi
 
 KELVIN S3 is intended for systems such as:
 
-- compressor cooling skids
-- multi-fan radiator sections
-- air coolers and heat exchanger radiator assemblies
-- installations with optional spray / adiabatic cooling
-- systems requiring reverse airflow / cleaning cycle
-- cooling systems with alarm, unload, flap, and pump outputs
-
-Typical deployment:  
-**a compressor cooling radiator with 6 to 12 fans, staged cooling logic, auxiliary outputs, and service-oriented diagnostics**
+- compressor cooling radiators
+- multi-fan dry coolers
+- oil cooler and aftercooler assemblies
+- industrial cooling loops with pump support
+- systems requiring reverse cleaning cycle
+- machines with alarm/interlock behavior
+- installations requiring service visibility and remote diagnostics
 
 ---
 
@@ -33,68 +64,99 @@ Typical deployment:
 
 ### Master controller
 - **ESP32-S3** based control unit
-- built-in Web UI and JSON backend
+- built-in **Web UI**
+- JSON backend for diagnostics and state synchronization
 - non-volatile configuration storage
-- modular firmware focused on control logic, diagnostics, and serviceability
+- modular firmware architecture focused on control logic and serviceability
 
-### Master relay outputs
-Current KELVIN S3 architecture uses the following relay mapping on the master module:
+---
 
-- **RO1 = ALARM**
-- **RO2 = UNLOAD**
-- **RO3 = WATER VALVE / FLAP**
-- **RO4 = SPRAY**
-- **RO5 = REVERSE**
-- **RO6 = PUMP1**
-- **RO7 = PUMP2**
-- **RO8 = PUMP3**
+### Relay architecture
+KELVIN S3 v1.5.0 uses a **32-channel output concept**.
 
-### Fan outputs
-Fans are controlled through an external **Modbus RTU relay slave**:
+#### Internal system outputs
+- **Relay 1 to Relay 24** are reserved for internal system functions
 
-- **FAN1 to FAN12** on slave relay outputs
-- remaining outputs reserved for future expansion
+These outputs may be used by the firmware for:
+- staged fan control
+- alarm logic
+- unload/interlock handling
+- flap / water valve logic
+- reverse logic
+- spray / adiabatic support
+- pump outputs
+- future internal machine functions
 
-### Inputs and sensing
-Depending on build and hardware variant, KELVIN S3 uses:
+Exact assignment may depend on the hardware build and firmware configuration.
+
+#### Auxiliary outputs
+- **Relay 25 = AUX1**
+- **Relay 26 = AUX2**
+- **Relay 27 = AUX3**
+- **Relay 28 = AUX4**
+- **Relay 29 = AUX5**
+- **Relay 30 = AUX6**
+- **Relay 31 = AUX7**
+- **Relay 32 = AUX8**
+
+AUX outputs are designed as **reactive outputs** driven by logic conditions derived from exported system values.
+
+---
+
+## Inputs and sensing
+
+Depending on firmware build and hardware variant, KELVIN S3 may use:
 
 - multiple temperature channels
 - PT100-based sensing architecture
 - ambient temperature input
-- optional digital interlocks and fault signals
-- optional monitoring extensions
+- digital status / interlock inputs
+- optional pressure, voltage, or current-related monitoring extensions
+- service-oriented internal status exports for logic and diagnostics
+
+The sensing architecture is designed to support real machine cooling decisions rather than single-threshold thermostat behavior.
 
 ---
 
 ## Core functions
 
 ### Multi-stage fan control
-KELVIN S3 controls radiator fans in multiple stages according to thermal conditions and selected operating profile.
+KELVIN S3 controls radiator fans in multiple stages according to thermal demand and selected operating mode.
 
 Features include:
-- configurable fan count and stage behavior
-- staged cooling response
+- configurable fan count
+- configurable stage logic
+- deterministic stage transitions
 - AUTO and MANUAL operation
-- support for larger fan arrays through Modbus expansion
+- support for larger fan arrays
+- separation of control logic from UI rendering
+
+The system is intended for radiator layouts where predictable staging matters more than simple ON/OFF switching.
 
 ---
 
 ### Fan rotation logic
-To reduce uneven wear, the controller supports controlled fan rotation.
+To reduce uneven wear, KELVIN S3 supports controlled fan rotation.
 
-This helps to:
+Goals:
 - distribute runtime more evenly
-- reduce wear on individual fans and relays/contactors
-- keep long-term operation more balanced
+- reduce wear on individual fans, relays, and contactors
+- keep thermal behavior balanced over long-term operation
 
-Rotation is handled in control logic, not as a UI-side effect.
+Rotation is handled in backend control logic, not as a dashboard-side effect.
 
 ---
 
-### Spray cooling
-KELVIN S3 supports an auxiliary **SPRAY** output for adiabatic / evaporative cooling.
+### Spray / adiabatic cooling
+KELVIN S3 supports **SPRAY** as a controlled high-stage cooling function.
 
-Spray is treated as a controlled high-stage cooling function with operating constraints, not as an always-free parallel output.
+Important in v1.5.0:
+- **SPRAY is part of the core cooling logic**
+- it is **not** treated as AUX
+- it is activated only under defined operating conditions
+- it follows thermal and safety rules of the main system
+
+This keeps adiabatic support inside the deterministic cooling path.
 
 ---
 
@@ -105,44 +167,57 @@ This part of the firmware is designed so that reverse operation is:
 
 - state-dependent
 - protected against unsafe transitions
-- deterministic after fan stop or mode changes
+- deterministic after stop or mode changes
 - clearly visible in diagnostics
+- compatible with controlled restart behavior
 
-This is one of the key safety-oriented parts of the project.
+This is one of the most important safety-oriented sections of the project.
 
 ---
 
 ### Pump and flap logic
-KELVIN S3 supports up to **3 cooling pumps** including **afterrun** behavior.
+KELVIN S3 supports coordinated coolant-side logic including:
 
-Pump operation is tied to the **flap / water valve** logic:
+- pump outputs
+- flap / water valve logic
+- afterrun behavior
+- interlock consistency between hydraulic outputs
 
+Design rules include:
 - pumps must not run against a closed flap
 - flap must be open whenever pump operation is active
-- afterrun must remain logically consistent with flap state
-
-This is essential for safe coolant-side operation.
+- afterrun must remain logically consistent
+- output behavior must stay deterministic during transitions and fault states
 
 ---
 
 ### Safety and fault handling
-KELVIN S3 is designed around deterministic fault behavior.
+KELVIN S3 is designed around explicit and deterministic fault behavior.
 
-Depending on the detected condition and firmware configuration, the controller can:
+Depending on detected condition and configuration, the controller can:
 
-- activate the ALARM output
-- trigger UNLOAD / interlock behavior
+- activate alarm signaling
+- trigger unload or machine interlock behavior
 - block unsafe actions
-- keep only explicitly allowed outputs active
-- enter protected or lockout state
+- restrict output combinations
+- enter protected state
+- enter lockout / alarm condition
+- expose diagnostic state through JSON and service UI
 
-The design goal is clear service visibility and predictable reactions — not hidden fallback behavior.
+The design goal is not “hidden fallback behavior”, but **clear service visibility and predictable reaction**.
 
 ---
 
-## Operating profiles
+## Operating modes and profiles
 
-KELVIN S3 supports multiple operating profiles such as:
+KELVIN S3 supports operating logic such as:
+
+- **AUTO**
+- **MANUAL**
+- profile-based cooling behavior
+- configurable thermal response strategies
+
+Depending on firmware build, available profiles may include:
 
 - **POWER**
 - **OPTIMAL**
@@ -150,52 +225,115 @@ KELVIN S3 supports multiple operating profiles such as:
 - **CUSTOM**
 - **AUTO**
 
-These profiles allow the same platform to be adapted to different radiator layouts, machine behavior, and cooling priorities.
-
-Depending on firmware version, profiles may influence:
-- fan staging thresholds
-- rotation behavior
-- spray permissions
+These profiles may influence:
+- fan stage thresholds
 - cooling aggressiveness
-- automatic profile selection logic
+- rotation behavior
+- spray permission logic
+- automatic profile selection behavior
+
+Exact profile implementation may evolve between firmware revisions.
+
+---
+
+## AUX engine
+
+### AUX philosophy in v1.5.0
+KELVIN S3 v1.5.0 introduces a clearer definition of AUX behavior.
+
+AUX is **not** intended to replace core machine logic.  
+Instead, AUX acts as a **read-only reactive engine** based on exported internal values.
+
+This means AUX logic can react to system states such as:
+- temperatures
+- cooling stage
+- reverse state
+- alarm state
+- mode/profile state
+- service conditions
+- other exported variables
+
+But AUX does **not** own the core cooling process.
+
+This keeps the architecture clean:
+
+- **main firmware** = machine cooling and safety logic
+- **AUX engine** = reactive side behavior and extension logic
+
+---
+
+### AUX outputs
+KELVIN S3 provides:
+
+- **AUX1**
+- **AUX2**
+- **AUX3**
+- **AUX4**
+- **AUX5**
+- **AUX6**
+- **AUX7**
+- **AUX8**
+
+These outputs are intended for controlled auxiliary scenarios such as:
+- signaling
+- external enable chains
+- helper outputs
+- extension logic
+- installation-specific reactions
+
+Exact use depends on the machine and project configuration.
 
 ---
 
 ## Web UI and diagnostics
 
-KELVIN S3 includes a built-in web dashboard for:
+KELVIN S3 includes a built-in web dashboard used for:
 
-- live temperatures
+- live temperature monitoring
 - mode and profile overview
-- fan and relay/output state visualization
-- alarm and warning display
-- service and testing functions
+- fan and output state visualization
+- warning and alarm visibility
+- service/testing functions
 - configuration pages
-- trend graphs and history functions (build dependent)
+- diagnostic state inspection
+- trend/history features (build dependent)
+- AUX status and logic visibility
 
-The dashboard is driven by a **JSON backend**, which serves as the primary source of truth for UI state and diagnostics.
+The dashboard is driven by a **JSON backend**, which acts as the primary source of truth for UI state.
+
+### Service UI
+The service-oriented part of the UI is important to the project philosophy.
+
+In current architecture, service features may include:
+- I/O state visibility
+- diagnostics and quick checks
+- output testing tools
+- status explanation
+- internal exported values
+- dedicated **AUX tab**
+
+The goal is practical real-world service usability, not decorative UI.
 
 ---
 
 ## Firmware design goals
 
-The current KELVIN S3 development is focused on:
+Current KELVIN S3 development is focused on:
 
 - deterministic control behavior
-- separation of backend logic and UI rendering
+- robust backend logic
+- clear separation of UI and control state
 - stable JSON-driven dashboard operation
-- robust safety and interlock handling
-- service-friendly diagnostics
-- modular growth without breaking core control logic
-
-KELVIN S3 is not intended to be a hobby thermostat project.  
-It is a machine-oriented control platform for real service conditions.
+- reliable interlocks and safety handling
+- maintainable industrial-style firmware structure
+- modular growth without breaking core logic
+- service visibility during commissioning and diagnostics
 
 ---
 
 ## Typical high-level states
 
-The system operates through states such as:
+Depending on firmware build, the system may operate through states such as:
 
 - **IDLE / STANDBY**
 - **AUTO RUN**
@@ -206,27 +344,29 @@ The system operates through states such as:
 - **SAFETYLOCK**
 - **ALARM / LOCKOUT**
 - **SERVICE**
+- **AUX REACTIVE STATES**
 
-Exact state behavior depends on firmware version and enabled modules.
+Exact behavior depends on enabled modules and current firmware revision.
 
 ---
 
 ## Project status
 
-This repository contains the active firmware platform for **KELVIN S3**.
+This repository contains the active firmware platform for **KELVIN S3 v1.5.0**.
 
-Current development is focused mainly on:
+Current development focus includes:
 
 - control stability
-- correctness of fan and output logic
-- safety behavior and interlocks
+- fan/output correctness
+- safety and interlocks
+- service-oriented diagnostics
 - Web UI consistency
-- diagnostics, graphs, and history improvements
-- maintainable industrial-style firmware architecture
+- AUX integration and clarity
+- maintainable industrial firmware architecture
 
 > **Warning**  
 > This is industrial control firmware.  
-> Always validate wiring, relay mapping, interlocks, sensor readings, and fault reactions on a controlled test setup before deploying it on live equipment.
+> Always validate wiring, relay mapping, interlocks, sensor readings, state transitions, and fault reactions on a controlled test setup before deployment on live equipment.
 
 ---
 
